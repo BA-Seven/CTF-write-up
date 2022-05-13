@@ -16,8 +16,12 @@ Après plusieurs essais de payloads POC. On obtient un payload `');--` URLencode
 
 On utilise donc cette approche pour réaliser une injection UNION based. Après plusieurs essais de repérage, on parvient à lister les tables avec `test')UNION select 1,'',tablename from pg_tables;--`. En circulant rapidement sur la page, on repère la table `memes` (et la table `___youw1lln3verfindmyfl4g___` si on est pas stupide comme moi :/).
 
-Il suffit alors de lister les colonnes de cette table avec `test')UNION select 1,'',column_name from information_schema.columns where table_name='memes';--` :
+Il suffit alors de lister les colonnes de cette table avec :
+
+    test')UNION select 1,'',column_name from information_schema.columns where table_name='memes';--
+Les 3 colonnes sont donc :
 - tags
 - filename
 - id
-La colonne intéressante est bien entendu `filename` qu'on extrait gentiment avec `test')UNION select 1,filename,'' from memes;--` ce qui nous donne 7 memes dont un contenant le flag à recopier pour notre plus grand plaisir.
+
+La colonne intéressante est bien entendu `filename` qu'on extrait gentiment avec `test')UNION select 1,filename,'' from memes;--` ce qui nous renvoie 7 memes dont un contenant le flag à recopier pour notre plus grand plaisir.
