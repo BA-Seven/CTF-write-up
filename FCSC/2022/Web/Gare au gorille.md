@@ -10,7 +10,7 @@ En naviguant sur le site, on trouve plusieurs choses :
 - une fonction de signaler certaines images à l'admin
 
 ## Réflexion
-La construction de site présente laisse penser qu'on doit s'attendre à une XSS et éventuellement un vol de cookie. On teste donc le champ /?search= avec un payload POC :
+La construction de site présente laisse penser qu'on doit s'attendre à une XSS et éventuellement un vol de cookie. On teste donc le champ `/?search=` avec un payload POC :
 `https://gare-au-gorille.france-cybersecurity-challenge.fr/?search=<script>alert("XSS")</script>`
 Et bingo, on obtient bien un pop-up JavaScript qui confirme notre hypothèse.
 
