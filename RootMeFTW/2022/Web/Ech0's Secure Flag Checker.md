@@ -53,6 +53,7 @@ Qu'est-ce qu'on peut faire de marrant avec une LFI ? Dans le monde merveilleux d
 Pour le faire il suffit d'inclure le fichier /proc/X/cmdline avec X le PID du processus. Ce fichier cmdline renvoie en fait la ligne de commande avec laquelle le programme a été lancé. Evidemment on va pas s'amuser à checker tous les PID à la main donc pour l'occasion j'ai fait un petit script que vous pouvez retrouver [ici](./utils/lfi_process_checker.py). 
 
 On peut tenter de leak le premier processus avec `?view=/proc/1/cmdline` qui nous renvoie un très sympathique : 
+
 ![[./images/cmdline.png]](./images/cmdline.png)
 
 Plus qu'à tester sur les autres PID... No spoil mais celui qui marche c'est le 8. On voit alors apparaître sous nos yeux ébahis cette sainte ligne :
