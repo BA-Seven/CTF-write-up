@@ -15,7 +15,7 @@ Le flag est au format FCSC{<nom d'utilisateur>:\<nom de la machine>:\<nom du nav
 
 Par exemple : FCSC{toto:Ordinateur-de-jojo:Firefox}.
 
-# Résolution
+## Résolution
 Le fichier donné est un dump de mémoire classique, étudiable avec volatility. Cette simple commande (avec volatility 3) nous donne la liste des processus.
 ```
 python3 vol.py -f ../fcsc.dmp windows.envars.Envars
