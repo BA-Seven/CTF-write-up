@@ -8,7 +8,7 @@ Bon petite recherche sur le protocole CAN... Pas grand chose d'intéressant on s
 
 On ouvre le fichier avec WireShark en toute tranquilité. On remarque le petit paquet qui contien `FCSC`. 
 
-Un peu plus d'investigation et on se rend compte que les paquets sont ordonés différement que par simple temporalité. 
+Un peu plus d'investigation et on se rend compte que les paquets sont ordonés différement que par simple temporalité. Ils sont ordonnés par leur `Identifier` qu'on peut voir dans la case info.
 
 On va donc chercher le petit filtre pour prendre les paquets 2 par 2 : `can.id == 0x00000002` en incluant du coup les XTD et les STD.
 
