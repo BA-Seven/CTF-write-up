@@ -1,7 +1,5 @@
 # ENISA Flag Store 1/2
 
-# ENISA Flag Store 1/2
-
 ## Enoncé
 
 L'ENISA a décidé de mettre en place un nouveau service en ligne disponible à l'année pour les équipes qui participent à l'ECSC. Ce service permet aux joueurs des différentes équipes nationales de se créer des comptes individuels en utilisant des tokens secrets par pays. Une fois le compte créé, les joueurs peuvent voir les flags capturés dans différents CTF.
@@ -19,8 +17,17 @@ Le site propose de s'inscrire, on est alors obligé d'entrer un nom d'utilisateu
 ## Étude du code source
 
 Il va bien falloir se mettre à lire sinon on risque pas d'arriver à grand chose. Le seul point d'entrée envisageable semble être les différentes requêtes SQL mais malheureusement, elles sont toutes bien préparées et ne peuvent pas être injectées :
+```
+stmt, err := db.Prepare(`SELECT id, username, country FROM users
+                             WHERE username = $1
+                             AND password = encode(digest($2, 'sha1'), 'hex')`)
+```
 
 Wait... Toutes ? La requête qui s'occupe du pays n'est pas sécurisée, voici notre point d'entrée !
+```
+req := fmt.Sprintf(`SELECT ctf, challenge, flag, points
+                        FROM flags WHERE country = '%s';`, user.Country);
+```
 
 ## Exploitation
 
