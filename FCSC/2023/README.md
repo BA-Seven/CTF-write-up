@@ -4,7 +4,7 @@ Pour ma seconde participation, je finis le FCSC avec une 48e place au classement
 ## Web
 - [ENISA Flag store 1/2](./Web/ENISA%20Flag%20Store.md)
 ## Misc
-- [Tri très séléctif](./Misc/Tri très séléctif.md)
+- [Tri très séléctif](./Misc/Tri%20très%20séléctif.md)
 ## Forensic
 - [Ransomémoire 0/3 - Pour commencer](./Forensic/Ransomémoire%200%20-%20Pour%20commencer.md)
 ## Hardware
