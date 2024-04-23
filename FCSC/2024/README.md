@@ -4,6 +4,6 @@ Troisième participation, je finis le FCSC2024 avec une 19e place au classement 
 ## Crypto
 - [El Gamal Fait (1 et 2)](./Crypto/elgamal.md)
 ## Forensic
-- [Horreur, malheur (1 à 4)](./Forensic/horreur-maleur.md)
+- [Horreur, malheur (1 à 4)](./Forensic/horreur-malheur.md)
 ## Reverse
 - [Fifty Shades of White (Pinkman)](./Reverse/fifty-shades-of-white.md)
