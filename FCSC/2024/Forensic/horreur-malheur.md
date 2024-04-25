@@ -52,7 +52,7 @@ Keys: 6ed5a98a a1bb2e0e c9172a2f
 
 Il suffit maintenant de changer le mot de passe de l'archive : 
 ```bash
-./bkcrack -C ../archive.encrypted -k 6ed5a98a a1bb2e0e c9172a2f -U unlocked.zip 123
+$ ./bkcrack -C ../archive.encrypted -k 6ed5a98a a1bb2e0e c9172a2f -U unlocked.zip 123
 ```
 
 Enfin, extraire l'archive avec le mot de passe `123` et afficher le flag.
