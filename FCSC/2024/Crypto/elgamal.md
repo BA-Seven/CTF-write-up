@@ -1,6 +1,6 @@
 # El Gamal Fait
 
-## Partie 1/2
+## [Partie 1/2](./utils/el-gamal-fait-1.py)
 > On m'a dit qu'on pouvait utiliser RSA pour signer des messages au lieu de les chiffrer. J'ai essayé de faire pareil avec ElGamal. Est-ce que vous pouvez vérifier si ce que j'ai fait est sécurisé ?
 
 Après quelques recherches sur le système de signature El Gamal, on se rend compte qu'il existe un moyen très simple de prédire la signature du message si on a le contrôle de celui-ci. En effet grâce à l'attaque [Existential Forgery](https://en.wikipedia.org/wiki/ElGamal_signature_scheme#Security), il est possible de proposer comme signature valide `r = g^e*y mod p` et `s = −r mod (p − 1)` pour tout `e` avec `1 < e < p − 1`.
@@ -47,7 +47,7 @@ while True:
 conn.close()
 ```
 
-## Partie 2/2
+## [Partie 2/2](./utils/el-gamal-fait-2.py)
 > On m'a dit que dans certains cas, mon service de signature qui utilise ElGamal est encore plus facile à attaquer. À vous de me montrer ça !
 
 La deuxième partie est plus complexe car le message à signer est décidé par le programme et ne nous est fourni qu'après la génération de la clé publique. Cependant, la signature est ici restreinte au cas particulier où le générateur `g` (a.k.a le nombre élevé à la puissance) est 2 et le modulo `p` dans lequel on travaille est choisi tel que `p ≡ 1 mod 4`. J'ai personnellement dû faire un certain nombre de recherches avant de finalement tomber sur [un post stackoverflow cryptique](https://stackoverflow.com/questions/4506618/finding-a-generator-for-elgamal) recommandant de lire la note 11.67 du chapitre 11 du livre [The Handbook of Applied Cryptography](https://cacr.uwaterloo.ca/hac/) de  Alfred J. Menezes, Paul C. van Oorschot et Scott A. Vanstone  (oui oui...). On y lit donc :
